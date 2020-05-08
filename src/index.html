@@ -1,25 +1,25 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>News Aggregator</title>
-    <link rel="stylesheet" href="css/index.css">
-    
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>News Aggregator</title>
+  <link rel="stylesheet" href="index.css">
 </head>
 <body>
-    <div  class="container">
-        <div class="header"> <h2>News Aggregator</h2></div>
-        <div class="search" id="SearchBox">
-    <input  class="input-box" onkeyup="handleSearch()" type="text" placeholder="type and ......">
-    <!-- <div class="button">search</div> -->
-         </div>
-         <div id = "ResultCount"></div>
-     <div id="results" class="Results"></div> 
-   
-   <div class="results">
-   <span onclick="ShowAll()">BACK</span>  &nbsp;     <span id="SingleResults"></span></div>
-</div>  
-    <script src="js/index.js"></script>
+  <h1 class="site-title">News Aggregator</h1>
+  
+  <div class="search-container" id="SearchBox">
+    <input  onkeyup="handleSearch()" type="text" name="search"  class="input-box" id="search" placeholder="Type and press enter to search..." />
+  </div>
+  <div id = "ResultCount"></div>
+  <ul id="news-articles" class="Results">
+    <div class="results">
+      <span onclick="ShowAll()">BACK</span>  &nbsp;     <span id="SingleResults"></span></div>
+
+  </ul>
+  <script src="index.js"></script>
+
 </body>
 </html>
