@@ -21,6 +21,14 @@ body {
   grid-column-gap: 10px;
   grid-row-gap: 10px;
 }
+
+.not-found {
+    color: white;
+    font-family: sans-serif;
+    font-size: 35px;
+    margin-left: 25px;
+    list-style-type: none;
+  }
 .article-img{
     width: 100%;
     height: auto;
@@ -92,6 +100,15 @@ body {
       grid-column-gap: 10px;
       grid-row-gap: 10px;
     } 
+
+    
+      .not-found {
+        color: white;
+        font-family: sans-serif;
+        font-size: 25px;
+        margin-left: -20px;
+        list-style-type: none;
+      }
 
     .img_area {
         width: 265px;
