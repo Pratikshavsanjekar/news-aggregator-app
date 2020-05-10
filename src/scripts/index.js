@@ -1,86 +1,76 @@
-let savedData= null;
+document.querySelector("#toggle_action").addEventListener('change',toggle_func)
 
-
-let url= "https://newsapi.org/v2/top-headlines?country=in&apiKey=d84c79b5c841468d829306c08c9ebd4e";
- 
-let search = function(keyword){
- let searchUrl = url + `&q=${keyword}`;
- callApi(searchUrl);
-}
-let ShowAll= function(){
-    document.getElementById("news-articles").style.display = "grid";
-    document.getElementById("SingleResults").style.display = "none";
-
- 
-}
-let handleClick =function(elementNum){
-    // console.log(elementNum);
-    console.log(savedData[elementNum]);
-    let htmlChunk ="template data";
-    document.getElementById("SingleResults").innerHTML = htmlChunk;
-    
-    document.getElementById("news-articles").style.display = "none";
-
-
-}
-let handleSearch =function(){
-    if(event.keyCode==13){
-        var searchInput = document.getElementById("search");
-        search(searchInput.value);
+function toggle_func(e){
+  if (e.target.checked)
+   {
+    document.documentElement.setAttribute('data-theme', 'lite');
+    document.querySelector(".toggletxt").innerHTML="Toggle to Dark Mode";
     }
+else
+   {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    document.querySelector(".toggletxt").innerHTML="Toggle to Lite Mode";
+   }   
+}
+
+
+const apikey="d84c79b5c841468d829306c08c9ebd4e";
+var article_area=document.getElementById("news-articles");
+
+function getNews(news){
+  let output="";
+  if(news.totalResults>0){
+    news.articles.forEach(ind=>{
+      output+= 
+        ` <section class="container">
+          <li class="article"><a class="article-link" href="${ind.url}" target="_blank">
+          <div class="img_area">
+          <img src="${ind.urlToImage}" class="article-img" alt="${ind.title}"></img>
+          </div>
+          <h2 class="article-title">${ind.title}</h2>
+          <p class="article-description">${ind.description || "Description not available"}</p> <br>
+          <span class="article-author">-${ind.author? ind.author: "Anon"}</span><br>
+          </a>
+          </li>
+          </section>
+        `;
+    });
+    article_area.innerHTML=output;
+  }
+  else
+  { 
+    article_area.innerHTML='<li class="not-found">No article was found based on the search.</li>';
+  }
+};
+
+async function retreive(searchValueText=""){
+
+    article_area.innerHTML='<p class="load">News are Loading...</p>';
     
-}
-let prepareHTMLFromData = function (dataArr){
-    console.log(dataArr);
-let finalHTML ='';
-if(dataArr.length == 0){
-    document.getElementById("ResultCount").innerHTML="";
-    //document.getElementById("news-articles").innerHTML = "no results";
-    document.getElementById("news-articles").innerHTML = '<li class="not-found">No article was found based on the search.</li>';
-    return;
-}
-
-
-for(let i = 0; i < dataArr.length; i++){
-    console.log(dataArr[i]);
-
-    let htmlString = `
-    
-    <li class="article" onclick="handleClick(${i})">
-    <div class="img_area">
-    <img Class="article-img" src="${dataArr[i]["urlToImage"]}"> </div>
-        <h2  class="article-title">${dataArr[i]["title"]}</h2> 
-        <p class="article-description">${dataArr[i]["description"]} </p><br>
-        <span class="article-author">${dataArr[i]["author"]} </span> <br>
-        
-       </li>` ;
-
-        finalHTML = finalHTML + htmlString;
-console.log(finalHTML);
-
-
-}
-document.getElementById("ResultCount").innerHTML= `Result Count ${dataArr.length}`;
-document.getElementById("news-articles").innerHTML = finalHTML;
-// document.getElementById("results").innerHTML = htmlString;
+    if(searchValueText!=""){
+      url=`https://newsapi.org/v2/everything?q=${searchValueText}&apiKey=${apikey}`;
+    }
+    else
+    {
+      url=`https://newsapi.org/v2/top-headlines?country=in&apiKey=${apikey}`;
+    }
+    const response=await fetch(url);
+    const result=await response.json();
+    getNews(result);
 }
 
-let callApi = function(url){
-    let myPromise = fetch(url);   
-    myPromise.then(function(response){
-        response.json().then(
-            function(responseInner){
-            console.log(responseInner);
-                if(responseInner.articles){
-                    savedData = [...responseInner.articles];
-                   prepareHTMLFromData(responseInner.articles)
-                }
-        })
-        .catch(function(error){
-            console.log("error");
-        });
-    }).catch(function(error){
-    console.log(error);
-    })
+async function searchvalue(e){  
+    if (event.which === 13 || event.keyCode === 13 || event.key === "Enter")
+     {
+      retreive(e.target.value);
+     }
+};
+
+function start(){
+  document.getElementById("search").addEventListener('keypress',searchvalue);
+  retreive();
 }
-callApi(url);
+
+(function(){
+  start();}
+)();
