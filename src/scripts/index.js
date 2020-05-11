@@ -36,20 +36,11 @@ let finalHTML ='';
 if(dataArr.length == 0)
     
   {
-    //document.innerHTML='<li class="not-found">No article was found based on the search.</li>';
-  
-   document.getElementById("ResultCount").innerHTML="";
+    document.getElementById("ResultCount").innerHTML="";
     //document.getElementById("news-articles").innerHTML = "no results";
     document.getElementById("news-articles").innerHTML = '<li class="not-found">No article was found based on the search.</li>';
     return;
   }
-
-// let select = document.querySelector('.not-found');
-
-//          if (dataArr.length == 0 ){   
-//              select.innerHTML = "No article was found based on the search.";             
-//          }
-
 
 for(let i = 0; i < dataArr.length; i++){
     console.log(dataArr[i]);
