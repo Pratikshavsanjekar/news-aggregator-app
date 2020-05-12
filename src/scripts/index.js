@@ -38,7 +38,7 @@ if(dataArr.length == 0)
   {
     document.getElementById("ResultCount").innerHTML="";
     //document.getElementById("news-articles").innerHTML = "no results";
-    document.getElementById("news-articles").innerHTML = '<li class="not-found">No article was found based on the search.</li>';
+    document.getElementById("news-articles").innerHTML = '<h3 class="not-found">No article was found based on the search.</h3>';
     return;
   }
 
