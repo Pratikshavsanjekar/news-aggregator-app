@@ -1,88 +1,122 @@
-let savedData= null;
+
+var url = 'https://newsapi.org/v2/top-headlines?'+
+'country=in&'+
+'apiKey=d84c79b5c841468d829306c08c9ebd4e';
+let httpGetAsync = (theUrl, callback) => {
+
+var xmlHttp = new XMLHttpRequest();
 
 
-let url= "https://newsapi.org/v2/top-headlines?country=in&apiKey=d84c79b5c841468d829306c08c9ebd4e";
- 
-let search = function(keyword){
- let searchUrl = url + `&q=${keyword}`;
- callApi(searchUrl);
-}
-let ShowAll= function(){
-    document.getElementById("news-articles").style.display = "grid";
-    document.getElementById("SingleResults").style.display = "none";
-
- 
-}
-let handleClick =function(elementNum){
-    // console.log(elementNum);
-    console.log(savedData[elementNum]);
-    let htmlChunk ="template data";
-    document.getElementById("SingleResults").innerHTML = htmlChunk;
-    
-    document.getElementById("news-articles").style.display = "none";
-
-
-}
-let handleSearch =function(){
-    if(event.keyCode==13){
-        var searchInput = document.getElementById("search");
-        search(searchInput.value);
-    }
-    
-}
-let prepareHTMLFromData = function (dataArr){
-    console.log(dataArr);
-let finalHTML ='';
-if(dataArr.length == 0)
-    
-  {
-    document.getElementById("ResultCount").innerHTML="";
-    //document.getElementById("news-articles").innerHTML = "no results";
-   
-    document.getElementById("news-articles").innerHTML = '<h3 class="not-found">No article was found based on the search.</h3>';
-    return;
-  }
-
-for(let i = 0; i < dataArr.length; i++){
-    console.log(dataArr[i]);
-
-    let htmlString = `
-    
-    <li class="article" onclick="handleClick(${i})">
-    <div class="img_area">
-    <img Class="article-img" src="${dataArr[i]["urlToImage"]}"> </div>
-        <h2  class="article-title">${dataArr[i]["title"]}</h2> 
-        <p class="article-description">${dataArr[i]["description"]} </p><br>
-        <span class="article-author">${dataArr[i]["author"]} </span> <br>
+xmlHttp.onreadystatechange = () => {
+    if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
         
-       </li>` ;
-
-        finalHTML = finalHTML + htmlString;
-console.log(finalHTML);
-
-
-}
-document.getElementById("ResultCount").innerHTML= `Result Count ${dataArr.length}`;
-document.getElementById("news-articles").innerHTML = finalHTML;
-// document.getElementById("results").innerHTML = htmlString;
+        callback(xmlHttp.responseText);
+    }
 }
 
-let callApi = function(url){
-    let myPromise = fetch(url);   
-    myPromise.then(function(response){
-        response.json().then(
-            function(responseInner){
-            console.log(responseInner);
-                if(responseInner.articles){
-                    savedData = [...responseInner.articles];
-                   prepareHTMLFromData(responseInner.articles)
-                }
-        })
-        .catch(function(error){
-            console.log("error");
-        });
-    }).catch(function(error){
-    console.log(error);
-    })
+xmlHttp.open("GET", theUrl, true); 
+xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+xmlHttp.send(null);
 }
-callApi(url);
+
+let nodeCreated = `
+<li class="article">
+  <img class="article-img" src="IMG-20180709-WA0015.jpg" alt="image" style="width:100%">
+  <h2 class="article-title"> hello hii</h2>
+  <p class="article-description">hxjhsgyghwyugyuvyux6fwxgfw</p>
+  <span class="article-author" style="display: block;"> shaikh.a.a</span>
+  <a class="article-link" href="google.com"> hhjh</a>
+</li>
+`;
+
+let output = "";
+
+let makeSomeHTML = (response) => {
+let obj = JSON.parse(response);
+let dataArr = obj["articles"];
+  for (let i = 0; i < dataArr.length; i++) {
+      let currObj = dataArr[i];
+      let atitle = currObj["title"];
+      let aauthor = currObj["author"];
+      let adescription = currObj["description"];
+      let aimage = currObj["urlToImage"];
+      let alink = currObj["url"];
+      let outTemplate = `
+             <li class="article">
+                  <img  class="article-img" src="${aimage}" alt="image" style="width:100%" ><br><br>
+                  <h2 class="article-title"> ${atitle}</h2><br>
+                  <p class="article-description">${adescription || "DEscription not available"}</p><br>
+                  <span class="article-author" style="display: block;"> ${aauthor}</span><br>
+                  <a class="article-link" href="${alink}">link to page </a>
+            </li>    
+        `;
+    output = output+ outTemplate;
+    
+  
+}
+document.querySelector('#news-articles').innerHTML = output;
+}
+httpGetAsync(url, makeSomeHTML);
+
+const searchFrom = document.querySelector(".form-search");
+const input = document.getElementById("search");
+
+searchFrom.addEventListener('submit',retrieve)
+
+
+function retrieve(e){
+e.preventDefault() 
+let topic=input.value;
+let url1 =   `https://newsapi.org/v2/everything?q=${topic}&apiKey=8857ddfa72ae47238500738f55cc70f1`
+
+let output = "";
+
+
+
+let makeSomeHTML1 = (response) => {
+let obj = JSON.parse(response);
+let dataArr = obj["articles"];   
+for (let i = 0; i < dataArr.length; i++) {
+let currObj = dataArr[i];
+let atitle = currObj["title"];
+let aauthor = currObj["author"];
+let adescription = currObj["description"];
+let aimage = currObj["urlToImage"];
+let alink = currObj["url"];
+let outTemplate = `
+  <li class="article">
+       <img  class="article-img" src="${aimage}" alt="${atitle}" style="width:100%" ><br><br>
+       <h2 class="article-title"> ${atitle}</h2><br>
+       <p class="article-description">${adescription || "DEscription not available"} </p><br>
+       <span class="article-author" style="display: block;"> ${aauthor}</span><br>
+       <a class="article-link" href="${alink}">link to page </a>
+ </li>    
+`;
+output = output+ outTemplate; 
+}
+
+let select = document.querySelector('.not-found');
+
+if (obj.totalResults == 0 ){   
+ select.innerHTML = "No article was found based on the search.";             
+}
+
+
+document.querySelector('#news-articles').innerHTML = output;
+}
+httpGetAsync(url1, makeSomeHTML1);
+}
+
+
+
+
+// reload
+var btn = document.querySelector("#clearbtn");
+
+btn.addEventListener("click", function(e){
+
+e.preventDefault();
+
+location.reload(true);
+
+});
